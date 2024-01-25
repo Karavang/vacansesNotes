@@ -16,7 +16,9 @@ function App() {
 
   const newNote = async (e) => {
     e.preventDefault();
-    await invoke("new_note", { link: note });
+    if (!isContain) {
+      await invoke("new_note", { link: note });
+    }
     total();
   };
 
