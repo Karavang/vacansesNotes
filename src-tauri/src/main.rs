@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
 
@@ -74,13 +75,25 @@ fn contains_text(search_text: &str) -> Result<bool, tauri::Error> {
 
     Ok(contains)
 }
+#[tauri::command]
+fn list_text() -> Result<Vec<String>, tauri::Error> {
+    let file_name = "data.json";
 
+    let mut file = File::open(file_name)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+
+    let json_value: Value = serde_json::from_str(&contents)?;
+    let array_list: Vec<String> = serde_json::from_value(json_value["links"].clone())?;
+    Ok(array_list)
+}
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             new_note,
             count_elements,
-            contains_text
+            contains_text,
+            list_text
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

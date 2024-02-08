@@ -6,6 +6,7 @@ function App() {
   const [note, setNote] = useState("");
   const [totalValue, setTotalValue] = useState(0);
   const [isContain, setIsContain] = useState(false);
+  const [listText, setList] = useState([]);
   const total = async () =>
     setTotalValue(await invoke("count_elements").catch(console.error));
 
@@ -14,12 +15,16 @@ function App() {
       await invoke("contains_text", { searchText: note }).catch(console.error),
     );
 
+  const listNotes = async () =>
+    setList(await invoke("list_text").catch(console.error));
   const newNote = async (e) => {
     e.preventDefault();
     if (!isContain) {
       await invoke("new_note", { link: note });
     }
     total();
+    listNotes();
+    contains_text();
   };
 
   useEffect(() => {
@@ -34,6 +39,7 @@ function App() {
     }
   }, [isContain]);
   useEffect(() => {
+    listNotes();
     total();
   }, []);
 
@@ -43,7 +49,7 @@ function App() {
 
   return (
     <>
-      <h1>My checked vacances</h1>
+      <h1>Notes with uniqueness check</h1>
       <div className="flexator">
         <form onSubmit={newNote}>
           <input
@@ -61,7 +67,21 @@ function App() {
             Save
           </button>
         </form>
-        <p>Total: {totalValue}</p>
+        <div className="totalAndList">
+          <p>Total: {totalValue ? totalValue : 0}</p>
+          <ul className="totalAndlistUl">
+            {listText
+              ? listText.map((e) => (
+                  <li
+                    key={e}
+                    className="totalAndlistUlLi"
+                  >
+                    {e}
+                  </li>
+                ))
+              : "Now that's empty"}
+          </ul>
+        </div>
       </div>
     </>
   );

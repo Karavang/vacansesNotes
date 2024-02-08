@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "vacansesnotes",
+    "productName": "Notes with uniqueness check",
     "version": "0.1.0"
   },
   "tauri": {
@@ -57,7 +57,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "vacansesnotes",
+        "title": "Notes with uniqueness check",
         "width": 800
       }
     ]
