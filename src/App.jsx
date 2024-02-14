@@ -4,6 +4,7 @@ import "./App.css";
 
 function App() {
   const [note, setNote] = useState("");
+  const [mot, setMot] = useState("");
   const [totalValue, setTotalValue] = useState(0);
   const [isContain, setIsContain] = useState(false);
   const [listText, setList] = useState([]);
@@ -15,12 +16,13 @@ function App() {
       await invoke("contains_text", { searchText: note }).catch(console.error),
     );
 
-  const listNotes = async () =>
+  const listNotes = async () => {
     setList(await invoke("list_text").catch(console.error));
+    console.log(listText);
+  };
   const newNote = async (e) => {
-    e.preventDefault();
     if (!isContain) {
-      await invoke("new_note", { link: note });
+      await invoke("new_note", { link: note, motivation: mot });
     }
     total();
     listNotes();
@@ -29,13 +31,16 @@ function App() {
 
   useEffect(() => {
     const inputVac = document.getElementById("input-vac");
+    const motivation = document.getElementById("input-mot");
     const buttonVac = document.getElementById("button-vac");
     if (isContain) {
       inputVac.style.borderColor = "green";
       buttonVac.setAttribute("disabled", "true");
+      motivation.setAttribute("disabled", "true");
     } else {
       inputVac.style.borderColor = "red";
       buttonVac.removeAttribute("disabled");
+      motivation.removeAttribute("disabled");
     }
   }, [isContain]);
   useEffect(() => {
@@ -55,9 +60,19 @@ function App() {
           <input
             id="input-vac"
             type="text"
+            placeholder="Link"
             onChange={(e) => {
               const value = e.target.value;
               setNote(value);
+            }}
+          />
+          <input
+            id="input-mot"
+            type="text"
+            placeholder="Motivation list"
+            onChange={(e) => {
+              const value = e.target.value;
+              setMot(value);
             }}
           />
           <button
@@ -76,7 +91,7 @@ function App() {
                     key={e}
                     className="totalAndlistUlLi"
                   >
-                    {e}
+                    {e.link}
                   </li>
                 ))
               : "Now that's empty"}
