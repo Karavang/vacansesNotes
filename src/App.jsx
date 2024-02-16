@@ -20,7 +20,7 @@ function App() {
     setList(await invoke("list_text").catch(console.error));
     console.log(listText);
   };
-  const newNote = async (e) => {
+  const newNote = async () => {
     if (!isContain) {
       await invoke("new_note", { link: note, motivation: mot });
     }
@@ -28,7 +28,9 @@ function App() {
     listNotes();
     contains_text();
   };
-
+  const motivationModal = async (e) => {
+    console.log(e);
+  };
   useEffect(() => {
     const inputVac = document.getElementById("input-vac");
     const motivation = document.getElementById("input-mot");
@@ -84,12 +86,17 @@ function App() {
         </form>
         <div className="totalAndList">
           <p>Total: {totalValue ? totalValue : 0}</p>
+          <input
+            type="text"
+            id="sorterByLink"
+          />
           <ul className="totalAndlistUl">
             {listText
               ? listText.map((e) => (
                   <li
                     key={e}
                     className="totalAndlistUlLi"
+                    onClick={(e) => motivationModal(e.target.value)}
                   >
                     {e.link}
                   </li>
