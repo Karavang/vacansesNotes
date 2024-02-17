@@ -2,6 +2,7 @@
 use serde::{Deserialize, Serialize};
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
+extern crate webbrowser;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Data {
@@ -95,13 +96,20 @@ fn list_text() -> Result<Vec<Data>, tauri::Error> {
     Ok(data)
 }
 
+#[tauri::command]
+async fn redirection(link: &str) -> Result<(), tauri::Error> {
+    println!("{}", link);
+    webbrowser::open(link)?;
+    Ok(())
+}
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             new_note,
             count_elements,
             contains_text,
-            list_text
+            list_text,
+            redirection
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

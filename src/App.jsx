@@ -13,7 +13,10 @@ function App() {
   const [liForModal, setLiForModal] = useState({});
   const total = async () =>
     setTotalValue(await invoke("count_elements").catch(console.error));
-
+  const openBrowserAndLink = async (e) => {
+    console.log(e);
+    await invoke("redirection", { link: e }).catch(console.error);
+  };
   const contains_text = async () =>
     setIsContain(
       await invoke("contains_text", { searchText: note }).catch(console.error),
@@ -116,6 +119,7 @@ function App() {
         <Modal
           data={liForModal}
           setIsModal={reverseIsModal}
+          openBrowserAndLink={openBrowserAndLink}
         />
       )}
     </>
