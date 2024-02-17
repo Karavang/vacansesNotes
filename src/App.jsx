@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api";
 import { useState, useEffect } from "react";
 import "./App.css";
+import { Modal } from "./Modal";
 
 function App() {
   const [note, setNote] = useState("");
@@ -8,6 +9,8 @@ function App() {
   const [totalValue, setTotalValue] = useState(0);
   const [isContain, setIsContain] = useState(false);
   const [listText, setList] = useState([]);
+  const [isModal, setIsModal] = useState(false);
+  const [liForModal, setLiForModal] = useState({});
   const total = async () =>
     setTotalValue(await invoke("count_elements").catch(console.error));
 
@@ -30,6 +33,8 @@ function App() {
   };
   const motivationModal = async (e) => {
     console.log(e);
+    setIsModal(true);
+    setLiForModal(e);
   };
   useEffect(() => {
     const inputVac = document.getElementById("input-vac");
@@ -53,7 +58,9 @@ function App() {
   useEffect(() => {
     contains_text(note);
   }, [note]);
-
+  const reverseIsModal = () => {
+    setIsModal(!isModal);
+  };
   return (
     <>
       <h1>Notes with uniqueness check</h1>
@@ -92,11 +99,11 @@ function App() {
           />
           <ul className="totalAndlistUl">
             {listText
-              ? listText.map((e) => (
+              ? listText.map((e, index) => (
                   <li
-                    key={e}
+                    key={index}
                     className="totalAndlistUlLi"
-                    onClick={(e) => motivationModal(e.target.value)}
+                    onClick={() => motivationModal(e)}
                   >
                     {e.link}
                   </li>
@@ -105,6 +112,12 @@ function App() {
           </ul>
         </div>
       </div>
+      {isModal && (
+        <Modal
+          data={liForModal}
+          setIsModal={reverseIsModal}
+        />
+      )}
     </>
   );
 }
