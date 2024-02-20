@@ -95,6 +95,19 @@ fn list_text() -> Result<Vec<Data>, tauri::Error> {
 
     Ok(data)
 }
+#[tauri::command]
+fn filtred_list(search_text: &str) -> Result<Vec<Data>, tauri::Error> {
+    let data = match list_text() {
+        Ok(data) => data,
+        Err(err) => return Err(err),
+    };
+    let filtered_data: Vec<Data> = data
+        .into_iter()
+        .filter(|item| item.link.contains(search_text))
+        .collect();
+
+    Ok(filtered_data)
+}
 
 #[tauri::command]
 async fn redirection(link: &str) -> Result<(), tauri::Error> {
@@ -109,7 +122,8 @@ fn main() {
             count_elements,
             contains_text,
             list_text,
-            redirection
+            redirection,
+            filtred_list
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

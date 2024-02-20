@@ -45,15 +45,21 @@
   justify-content: space-around;
   padding: 0;
 }
-
+.totalAndList div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
 .totalAndlistUl {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
   padding: 0;
+  margin: 0;
   height: 40vh;
-  max-width: 50%;
+  width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
   gap: 8px;

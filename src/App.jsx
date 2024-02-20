@@ -11,20 +11,28 @@ function App() {
   const [listText, setList] = useState([]);
   const [isModal, setIsModal] = useState(false);
   const [liForModal, setLiForModal] = useState({});
+  const [sorting, setSorting] = useState("");
   const total = async () =>
     setTotalValue(await invoke("count_elements").catch(console.error));
   const openBrowserAndLink = async (e) => {
     console.log(e);
     await invoke("redirection", { link: e }).catch(console.error);
   };
+
   const contains_text = async () =>
     setIsContain(
       await invoke("contains_text", { searchText: note }).catch(console.error),
     );
 
+  const listSorting = async () =>
+    setList(
+      await invoke("filtred_list", {
+        searchText: sorting,
+      }).catch(console.error),
+    );
+
   const listNotes = async () => {
     setList(await invoke("list_text").catch(console.error));
-    console.log(listText);
   };
   const newNote = async () => {
     if (!isContain) {
@@ -39,6 +47,13 @@ function App() {
     setIsModal(true);
     setLiForModal(e);
   };
+  useEffect(() => {
+    if (sorting !== "") {
+      listSorting();
+    } else {
+      listNotes();
+    }
+  }, [sorting]);
   useEffect(() => {
     const inputVac = document.getElementById("input-vac");
     const motivation = document.getElementById("input-mot");
@@ -96,23 +111,26 @@ function App() {
         </form>
         <div className="totalAndList">
           <p>Total: {totalValue ? totalValue : 0}</p>
-          <input
-            type="text"
-            id="sorterByLink"
-          />
-          <ul className="totalAndlistUl">
-            {listText
-              ? listText.map((e, index) => (
-                  <li
-                    key={index}
-                    className="totalAndlistUlLi"
-                    onClick={() => motivationModal(e)}
-                  >
-                    {e.link}
-                  </li>
-                ))
-              : "Now that's empty"}
-          </ul>
+          <div>
+            <input
+              type="text"
+              id="sorterByLink"
+              onChange={(e) => setSorting(e.target.value)}
+            />
+            <ul className="totalAndlistUl">
+              {listText
+                ? listText.map((e, index) => (
+                    <li
+                      key={index}
+                      className="totalAndlistUlLi"
+                      onClick={() => motivationModal(e)}
+                    >
+                      {e.link}
+                    </li>
+                  ))
+                : "Now that's empty"}
+            </ul>
+          </div>
         </div>
       </div>
       {isModal && (
