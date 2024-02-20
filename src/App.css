@@ -51,9 +51,7 @@
   align-items: center;
   gap: 16px;
 }
-.totalAndList div input {
-  max-width: 200px;
-}
+
 .totalAndlistUl {
   display: flex;
   align-items: center;
